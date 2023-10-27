@@ -21,14 +21,20 @@ class PaymentAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'total_amount', 'status', 'creation_time', 'confirmation_time']
-    actions = ['confirm_orders']
+    actions = ['confirm_order']
 
     def confirm_order(self, request, queryset):
         for order in queryset:
-            if order.payment_set.filter(status=True).exists():
-                order.status = True
+            try:
+                payment = order.payment  # Получаем экземпляр Payment, связанный с Order
+            except Payment.DoesNotExist:
+                continue  # Если связанной оплаты нет, переходим к следующему заказу
+
+            if payment.status == 'PAID':  # Проверяем статус оплаты
+                order.status = 'CONFIRMED'
                 order.confirmation_time = timezone.now()
                 order.save()
                 time.sleep(2)
                 send_webhook_request.delay(order.id, str(order.total_amount), str(order.confirmation_time))
+
         self.message_user(request, "Выбранные заказы были успешно подтверждены.")
