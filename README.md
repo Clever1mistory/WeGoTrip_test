@@ -22,7 +22,7 @@
 1. Клонируйте репозиторий с GitHub:
 
 ```
-[git@github.com:Clever1mistory/music_project.git](https://github.com/Clever1mistory/WeGoTrip_test)
+[git@github.com:Clever1mistory/WeGoTrip_test.git](https://github.com/Clever1mistory/WeGoTrip_test)
 ```
 
 2. Перейдите в каталог проекта:
